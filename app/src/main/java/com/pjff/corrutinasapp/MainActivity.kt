@@ -32,10 +32,9 @@ import com.pjff.corutinasapp.MainViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //Vid 86
-        //val viewModel :  MainViewModel by viewModels()
-        //Vid 88
+        /*Paso 1.7
+          val viewModel :  MainViewModel by viewModels()
+          Paso 3.7*/
         val viewModel :  ItemsViewModel by viewModels()
         setContent {
             CorutinasAppTheme {
@@ -44,9 +43,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //Vid 86, es para el botón.
+                    //Paso 1.8, es para el botón.
                     //Content(viewModel)
-                    //Vid 88
+                    //Paso 3.8
                     ItemsView(viewModel)
                 }
             }
@@ -55,57 +54,64 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-//Vid 85
+/*V-85, Paso 1.0
+Paso 1.9, agregamos el viewModel*/
 fun Content(viewModel: MainViewModel) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         BotonColor()
-        //Vid 87,
         if(viewModel.isLoading){
             CircularProgressIndicator()
         }else{
+            /*Paso 1.2
+            Paso 1.10, agregamos el viewModel.resultState*/
             Text(text = viewModel.resultState)
         }
+        /*Paso 1.3
+        Paso 1.12, ejecutamos el viewModel.fetchData*/
         Button(onClick = { viewModel.fetchData()}) {
             Text("Llamar API")
         }
     }
 }
 
+//Paso 1.4
 @Composable
 fun BotonColor(){
     var color by remember { mutableStateOf(false) }
-
+    //Cada vez que quedemos en el boton cambia el color
     Button(onClick = { color = !color } , colors = ButtonDefaults.buttonColors(
         containerColor = if(color) Color.Blue else Color.Red
     )) {
         Text("Cambiar color")
     }
-
 }
 
-//Vid 88
+//Paso 3.4
 @Composable
-//vid 89 
 fun ItemsView(viewModel: ItemsViewModel){
     val itemsList = viewModel.itemList
+    //Paso 4.2
     val lista by viewModel.lista.collectAsState()
+    //Paso 3.9,llamamos a la corrutina
     LaunchedEffect(Unit){
         viewModel.fetchData()
     }
 
     Column {
+        //Paso 2.4, si esta cargando se muestra el circular
         if(viewModel.isLoading){
             CircularProgressIndicator()
         }else{
+            //Paso 3.5
             LazyColumn{
+                //Paso 4.3, llamamos a lista.
                 items(lista) {item ->
                     Text(text = item.name)
                 }
             }
         }
     }
-
 }

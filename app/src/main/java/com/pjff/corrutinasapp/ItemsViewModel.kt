@@ -14,23 +14,24 @@ import kotlinx.coroutines.withContext
 import java.lang.Exception
 
 class ItemsViewModel: ViewModel() {
-    //Vid 89,es para que se este actalizando constantemente ejemplo la bolsa de valores.
-// flow
+    /*V-89,Paso 4.0 Flow es para que se este actualizando constantemente ,
+     ejemplo la bolsa de valores y así no usamos el mutableStateOf*/
     private val _lista : MutableStateFlow<List<ItemsModel>> = MutableStateFlow(emptyList())
     val lista = _lista
 
+    //Paso 3.1
     var itemList = mutableStateListOf(ItemsModel())
         private set
 
     var isLoading by mutableStateOf(false)
         private set
 
-    //para qur cargen los datos sin hacer nada
-//    init {
-//        fetchData()
-//    }
+    //Paso 3.6 ,para que cargen los datos sin hacer nada
+    //    init {
+    //        fetchData()
+    //    }
 
-     fun fetchData(){
+    fun fetchData(){
         viewModelScope.launch {
             try{
                 isLoading = true
@@ -46,6 +47,7 @@ class ItemsViewModel: ViewModel() {
     private suspend fun llamarApi(){
         val result = withContext(Dispatchers.IO){
             delay(5000)
+            //Paso 3.2
             listOf(
                 ItemsModel(1, "Elemento 1"), ItemsModel(2, "Elemento 2"), ItemsModel(3, "Elemento 3"), ItemsModel(4, "Elemento 4"), ItemsModel(5, "Elemento 5"),
                 ItemsModel(6, "Elemento 6"), ItemsModel(7, "Elemento 7"), ItemsModel(8, "Elemento 8"), ItemsModel(9, "Elemento 9"), ItemsModel(10, "Elemento 10"),
@@ -59,7 +61,9 @@ class ItemsViewModel: ViewModel() {
                 ItemsModel(46, "Elemento 46"), ItemsModel(47, "Elemento 47"), ItemsModel(48, "Elemento 48"), ItemsModel(49, "Elemento 49"), ItemsModel(50, "Elemento 50")
             )
         }
+        //Paso 3.3, inyectamos todo el resultado
         itemList.addAll(result)
+        //Paso 4.1
         _lista.value = result
     }
 
